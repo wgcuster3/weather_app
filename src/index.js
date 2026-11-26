@@ -23,7 +23,7 @@ async function getData(location, unit) {
     const processedWeatherData = process.processWeatherData(rawWeatherData);
 
     display.fillScreen(processedWeatherData, unit);  
-    lastSuccessfullSearch = location;
+    lastSuccessfulSearch = location;
         
   } catch (error) {
     errorMsg.hidden = false;
@@ -35,7 +35,7 @@ async function getData(location, unit) {
 }
 
 let unit = "us"
-let lastSuccessfullSearch = '';
+let lastSuccessfulSearch = '';
 
 const searchInput = document.getElementById("search-input");
 
@@ -50,6 +50,7 @@ for (const button of unitButtons){
       if (unit === event.currentTarget.dataset.unit) {
         return;
       } 
+
       unit = event.currentTarget.dataset.unit;
       for (const button2 of unitButtons){
         if (button2.dataset.unit === unit) {
@@ -58,8 +59,8 @@ for (const button of unitButtons){
             button2.ariaPressed = false;
         }
       }
-      if (lastSuccessfullSearch != ''){
-        getData(lastSuccessfullSearch, unit);
+      if (lastSuccessfulSearch !== ''){
+        getData(lastSuccessfulSearch, unit);
       }
     })
 }
@@ -68,7 +69,7 @@ const form = document.querySelector("form");
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
-  if (searchInput.value.trim() != ''){
+  if (searchInput.value.trim() !== ''){
     getData(searchInput.value.trim(), unit);
   }
 });
