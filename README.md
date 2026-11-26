@@ -1,1 +1,1 @@
-# restaurant_page
+AI built my frontend so I could focus on the javascript for my coursework.

@@ -1,17 +1,74 @@
 import "./styles.css";
-import { loadHome } from "./home.js";
+import * as display from "./display.js";
+import * as process from "./process.js";
 
- if (process.env.NODE_ENV !== 'production') {
-   console.log('Looks like we are in development mode!');
- }
+async function getData(location, unit) {
+  //Show loading icon
+  const loadingIcon = document.getElementById("loading");
+  loadingIcon.hidden = false;
 
-const contentDiv = document.getElementById("content");
+  //Hide error message in case it exists
+  const errorMsg = document.getElementById("error");
+  errorMsg.hidden = true;
 
-//Load the home page as the initial load
-loadHome(contentDiv);
+  const url = process.createUrl(location, unit);
+  try {
+    const response = await fetch(url)
+    
+    if (!response.ok) {
+      throw new Error(`Fetch failed with error code ${response.status}`)
+    }
+ 
+    const rawWeatherData = await response.json();
+    const processedWeatherData = process.processWeatherData(rawWeatherData);
 
-const homeBtn = document.getElementById("home-btn");
+    display.fillScreen(processedWeatherData, unit);  
+    lastSuccessfullSearch = location;
+        
+  } catch (error) {
+    errorMsg.hidden = false;
+    console.log(error);
+  } finally {
+    // hide loading after processing
+    loadingIcon.hidden = true; 
+  }
+}
 
-homeBtn.addEventListener("click", function() {
-        loadHome(contentDiv);
-    });
+let unit = "us"
+let lastSuccessfullSearch = '';
+
+const searchInput = document.getElementById("search-input");
+
+//Default the page to a location
+searchInput.value = "Pittsburgh, PA";
+getData(searchInput.value.trim(), unit);
+
+// Add a listener to unit buttons
+const unitButtons = document.querySelectorAll(".unit-btn");
+for (const button of unitButtons){
+    button.addEventListener("click", function(event){
+      if (unit === event.currentTarget.dataset.unit) {
+        return;
+      } 
+      unit = event.currentTarget.dataset.unit;
+      for (const button2 of unitButtons){
+        if (button2.dataset.unit === unit) {
+            button2.ariaPressed = true;
+        } else {
+            button2.ariaPressed = false;
+        }
+      }
+      if (lastSuccessfullSearch != ''){
+        getData(lastSuccessfullSearch, unit);
+      }
+    })
+}
+
+const form = document.querySelector("form");
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (searchInput.value.trim() != ''){
+    getData(searchInput.value.trim(), unit);
+  }
+});

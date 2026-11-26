@@ -1,14 +1,419 @@
-/* styles.css */
-*, *::before, *::after {
+/* ===== Reset ===== */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-body {
+body,
+h1,
+h2,
+h3,
+p,
+dl,
+dd,
+ol {
   margin: 0;
 }
 
-#content {
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* Make sure the `hidden` attribute always wins over display rules */
+[hidden] {
+  display: none !important;
+}
+
+/* Hide icon <img>s until JS gives them a src */
+img:not([src]) {
+  visibility: hidden;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ===== Theme =====
+   body[data-theme] swaps the background gradient. Add more themes as you like. */
+:root {
+  --text: #fff;
+  --text-muted: rgb(255 255 255 / 0.75);
+  --card-bg: rgb(255 255 255 / 0.15);
+  --card-border: rgb(255 255 255 / 0.25);
+  --radius: 1rem;
+  --bg: linear-gradient(160deg, #4a90d9, #7fb3e8);
+}
+
+body[data-theme="clear-day"] {
+  --bg: linear-gradient(160deg, #2f80ed, #56ccf2);
+}
+body[data-theme="clear-night"] {
+  --bg: linear-gradient(160deg, #0f2027, #203a43 50%, #2c5364);
+}
+body[data-theme="partly-cloudy-day"] {
+  --bg: linear-gradient(160deg, #4a90d9, #9bbcd8);
+}
+body[data-theme="partly-cloudy-night"] {
+  --bg: linear-gradient(160deg, #232f45, #4b5d78);
+}
+body[data-theme="cloudy"] {
+  --bg: linear-gradient(160deg, #6b7b8c, #a3b1bf);
+}
+body[data-theme="rain"] {
+  --bg: linear-gradient(160deg, #3a4a5c, #5f7487);
+}
+body[data-theme="showers-day"] {
+  --bg: linear-gradient(160deg, #4f6f8f, #8aa6c1);
+}
+body[data-theme="showers-night"] {
+  --bg: linear-gradient(160deg, #1f2a3a, #3c4f66);
+}
+body[data-theme="snow"] {
+  --bg: linear-gradient(160deg, #8fa8c0, #dfe9f3);
+}
+body[data-theme="snow-showers-day"] {
+  --bg: linear-gradient(160deg, #9fb6cc, #e6eef6);
+}
+body[data-theme="snow-showers-night"] {
+  --bg: linear-gradient(160deg, #2c3e55, #6f88a3);
+}
+body[data-theme="rain-snow"],
+body[data-theme="sleet"] {
+  --bg: linear-gradient(160deg, #5d7184, #93a5b6);
+}
+body[data-theme="rain-snow-showers-day"] {
+  --bg: linear-gradient(160deg, #66809a, #a2b5c8);
+}
+body[data-theme="rain-snow-showers-night"] {
+  --bg: linear-gradient(160deg, #263547, #55697f);
+}
+body[data-theme="hail"] {
+  --bg: linear-gradient(160deg, #4b5563, #8a96a3);
+}
+body[data-theme="thunder"],
+body[data-theme="thunder-rain"] {
+  --bg: linear-gradient(160deg, #2b2d42, #4a4e69);
+}
+body[data-theme="thunder-showers-day"] {
+  --bg: linear-gradient(160deg, #3d4a63, #6d7a94);
+}
+body[data-theme="thunder-showers-night"] {
+  --bg: linear-gradient(160deg, #1a1c2c, #3a3f5c);
+}
+body[data-theme="fog"] {
+  --bg: linear-gradient(160deg, #8e9eab, #c9d3da);
+}
+body[data-theme="wind"] {
+  --bg: linear-gradient(160deg, #3e7c87, #8ab9b5);
+}
+
+/* Light backgrounds need dark text */
+body[data-theme="snow"],
+body[data-theme="snow-showers-day"] {
+  --text: #1d2b3a;
+  --text-muted: rgb(29 43 58 / 0.7);
+  --card-bg: rgb(255 255 255 / 0.45);
+  --card-border: rgb(255 255 255 / 0.6);
+}
+
+/* ===== Base ===== */
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  background-attachment: fixed;
+  transition: color 0.4s;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+}
+
+.card-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+/* ===== Header ===== */
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 2rem;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.search {
+  flex: 1;
+  display: flex;
+  min-width: 240px;
+  max-width: 520px;
+  margin-inline: auto;
+}
+
+.search input {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--card-border);
+  border-right: none;
+  border-radius: 999px 0 0 999px;
+  background: var(--card-bg);
+  color: var(--text);
+  outline: none;
+}
+
+.search input::placeholder {
+  color: var(--text-muted);
+}
+
+.search input:focus {
+  background: rgb(255 255 255 / 0.25);
+}
+
+.search-btn {
+  padding: 0.65rem 1.25rem;
+  border: 1px solid var(--card-border);
+  border-radius: 0 999px 999px 0;
+  background: rgb(255 255 255 / 0.3);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background: rgb(255 255 255 / 0.4);
+}
+
+/* Segmented °F / °C toggle — JS flips aria-pressed */
+.unit-toggle {
+  display: flex;
+  padding: 0.25rem;
+  border-radius: 999px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+}
+
+.unit-btn {
+  padding: 0.35rem 0.9rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.unit-btn[aria-pressed="true"] {
+  background: rgb(255 255 255 / 0.9);
+  color: #1d2b3a;
+}
+
+/* ===== Main layout ===== */
+.app-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem 2rem 2rem;
+}
+
+.weather {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 1.25rem;
+}
+
+.forecast {
+  grid-column: 1 / -1;
+}
+
+/* ===== Current conditions ===== */
+.location {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.date {
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.current-body {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.current-icon {
+  width: 120px;
+  height: 120px;
+}
+
+.current-temp {
+  font-size: 5rem;
+  font-weight: 200;
+  line-height: 1;
+}
+
+.current-temp .unit-label {
+  font-size: 2rem;
+  vertical-align: top;
+}
+
+.conditions {
+  font-size: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.feels-like,
+.description {
+  color: var(--text-muted);
+}
+
+/* ===== Details ===== */
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem 1rem;
+}
+
+.detail dt {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.detail dd {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-top: 0.15rem;
+}
+
+/* ===== Forecast ===== */
+.forecast-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.75rem;
+}
+
+.forecast-day {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  border-radius: 0.75rem;
+  background: rgb(255 255 255 / 0.1);
+}
+
+.forecast-name {
+  font-weight: 600;
+}
+
+.forecast-icon {
+  width: 48px;
+  height: 48px;
+}
+
+.forecast-temps .lo {
+  color: var(--text-muted);
+}
+
+/* ===== Loading & error ===== */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 4rem 0;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgb(255 255 255 / 0.3);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: rgb(220 53 69 / 0.85);
+  color: #fff;
+}
+
+/* ===== Footer ===== */
+.app-footer {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.app-footer a {
+  color: var(--text);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 720px) {
+  .app-header,
+  .app-main {
+    padding-inline: 1rem;
+  }
+
+  .weather {
+    grid-template-columns: 1fr;
+  }
+
+  .current-temp {
+    font-size: 4rem;
+  }
 }

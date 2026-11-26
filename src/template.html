@@ -1,20 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <header>
-        <nav>
-            <button id="home-btn">Home</button>
-        </nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather</title>
+  </head>
+  <!--
+    data-theme drives the background. Set it from JS to the API's `icon` value, e.g.
+      document.body.dataset.theme = "rain";
+    Supported in styles.css: every icon in src/icons
+    (clear-day/night, partly-cloudy-day/night, cloudy, rain, showers-day/night,
+    snow, snow-showers-day/night, rain-snow, rain-snow-showers-day/night, sleet,
+    hail, thunder, thunder-rain, thunder-showers-day/night, fog, wind)
+    An empty or unrecognized value falls back to the default --bg in :root.
+  -->
+  <body class="js-value" data-theme="">
+    <header class="app-header">
+      <h1 class="logo">Weather</h1>
+
+      <form id="search-form" class="search" autocomplete="off">
+        <label for="search-input" class="visually-hidden">Location</label>
+        <input
+          id="search-input"
+          name="location"
+          type="search"
+          placeholder="Search a city, zip, or address…"
+          required
+        />
+        <button id="search-button" type="submit" class="search-btn">Search</button>
+      </form>
+
+      <!-- data-unit values match Visual Crossing's `unitGroup` param -->
+      <div class="unit-toggle" role="group" aria-label="Temperature unit">
+        <button type="button" class="unit-btn" data-unit="us" aria-pressed="true">°F</button>
+        <button type="button" class="unit-btn" data-unit="metric" aria-pressed="false">°C</button>
+      </div>
     </header>
 
-    <div id="content">
-    
-    </div>
-    
-</body>
+    <main class="app-main">
+      <p id="error" class="error" hidden>Couldn't find that location. Try another search.</p>
+
+      <!-- Show while fetching: loading.hidden = false; hide when done -->
+      <div id="loading" class="loading" hidden>
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Fetching forecast…</p>
+      </div>
+
+      <section id="weather" class="weather">
+        <!-- Current conditions -->
+        <article class="card current">
+          <div class="current-header">
+            <h2 id="location-name" class="location js-value"></h2>
+            <p id="current-date" class="date js-value"></p>
+          </div>
+
+          <div class="current-body">
+            <img id="current-icon" class="current-icon js-value" alt="" />
+            <div>
+              <p class="current-temp">
+                <span id="current-temp" class="js-value"></span><span class="unit-label">°F</span>
+              </p>
+              <p id="current-conditions" class="conditions js-value"></p>
+              <p class="feels-like">
+                Feels like <span id="feels-like" class="js-value"></span><span class="unit-label">°F</span>
+              </p>
+            </div>
+          </div>
+
+          <p id="description" class="description js-value"></p>
+        </article>
+
+        <!-- Detail stats -->
+        <article class="card details">
+          <h3 class="card-title">Today's details</h3>
+          <dl class="details-grid">
+            <div class="detail">
+              <dt>High / Low</dt>
+              <dd><span id="temp-max" class="js-value"></span>° / <span id="temp-min" class="js-value"></span>°</dd>
+            </div>
+            <div class="detail">
+              <dt>Humidity</dt>
+              <dd><span id="humidity" class="js-value"></span>%</dd>
+            </div>
+            <div class="detail">
+              <dt>Wind</dt>
+              <dd><span id="wind-speed" class="js-value"></span> <span id="wind-unit">mph</span></dd>
+            </div>
+            <div class="detail">
+              <dt>Precip chance</dt>
+              <dd><span id="precip-prob" class="js-value"></span>%</dd>
+            </div>
+            <div class="detail">
+              <dt>Sunrise</dt>
+              <dd id="sunrise" class="js-value"></dd>
+            </div>
+            <div class="detail">
+              <dt>Sunset</dt>
+              <dd id="sunset" class="js-value"></dd>
+            </div>
+          </dl>
+        </article>
+
+        <!-- Forecast -->
+        <article class="card forecast">
+          <h3 class="card-title">7-day forecast</h3>
+          <!--
+            JS builds one <li> per day from the data, using this markup:
+              <li class="forecast-day">
+                <p class="forecast-name">Sun</p>
+                <img class="forecast-icon" alt="" />
+                <p class="forecast-temps"><span class="hi">55°</span> <span class="lo">41°</span></p>
+              </li>
+          -->
+          <ol id="forecast-list" class="forecast-list"></ol>
+        </article>
+      </section>
+    </main>
+
+    <!-- Visual Crossing asks for attribution — keep this -->
+    <footer class="app-footer">
+      Weather data provided by
+      <a href="https://www.visualcrossing.com/" target="_blank" rel="noopener">Visual Crossing</a>
+    </footer>
+  </body>
 </html>
